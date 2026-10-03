@@ -23,8 +23,13 @@
     },
     "plugins": [
       "expo-sqlite",
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-router",
+      "expo-status-bar"
     ],
-    "scheme": "igbadunbites"
+    "scheme": "igbadunbites",
+    "experiments": {
+      "typedRoutes": true
+    }
   }
 }

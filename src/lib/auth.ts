@@ -51,6 +51,8 @@ export async function signInWithGoogle(): Promise<SignInResult> {
   return { ok: true };
 }
 
+// This device only. The default ("global") would revoke the account's sessions
+// everywhere — signing out on the phone would also sign you out of the website.
 export async function signOut() {
-  await supabase.auth.signOut();
+  await supabase.auth.signOut({ scope: 'local' });
 }
