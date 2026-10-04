@@ -3,7 +3,7 @@ import { Tabs } from 'expo-router';
 import type { ComponentProps } from 'react';
 import type { ColorValue } from 'react-native';
 import { useCart } from '../../lib/cart';
-import { colors, serif } from '../../lib/theme';
+import { colors, fonts, serif } from '../../lib/theme';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
@@ -26,7 +26,7 @@ export default function TabsLayout() {
         tabBarActiveTintColor: colors.terracotta,
         tabBarInactiveTintColor: colors.cocoaSoft,
         tabBarStyle: { backgroundColor: colors.oat, borderTopColor: colors.hairline },
-        tabBarLabelStyle: { fontSize: 12, fontWeight: '600' },
+        tabBarLabelStyle: { fontFamily: fonts.sansSemiBold, fontSize: 12 },
         headerStyle: { backgroundColor: colors.oat },
         headerTintColor: colors.cocoa,
         headerTitleStyle: { fontFamily: serif, fontWeight: '400', color: colors.cocoa },
@@ -34,7 +34,7 @@ export default function TabsLayout() {
         sceneStyle: { backgroundColor: colors.oat },
       }}
     >
-      <Tabs.Screen name="index" options={{ title: 'Shop', headerTitle: 'Igbadun Bites', tabBarIcon: (p) => <TabIcon filled="storefront" outline="storefront-outline" {...p} /> }} />
+      <Tabs.Screen name="index" options={{ title: 'Shop', headerShown: false, tabBarIcon: (p) => <TabIcon filled="storefront" outline="storefront-outline" {...p} /> }} />
       <Tabs.Screen name="orders" options={{ title: 'Orders', headerTitle: 'My orders', tabBarIcon: (p) => <TabIcon filled="receipt" outline="receipt-outline" {...p} /> }} />
       <Tabs.Screen
         name="basket"

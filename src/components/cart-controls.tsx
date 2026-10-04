@@ -5,13 +5,13 @@ import { signInWithGoogle } from '../lib/auth';
 import { cart, MAX_QUANTITY, useCart } from '../lib/cart';
 import type { Product } from '../lib/products';
 import { useSession } from '../lib/session';
-import { colors, MIN_TOUCH } from '../lib/theme';
+import { colors, fonts, MIN_TOUCH } from '../lib/theme';
 
 type Size = 'md' | 'lg';
 
 // − qty + for one basket line (≥ 44 pt targets, screen-reader labels)
 export function QuantityStepper({ product, quantity, size = 'md' }: { product: Product; quantity: number; size?: Size }) {
-  const h = size === 'lg' ? 52 : MIN_TOUCH;
+  const h = size === 'lg' ? 56 : MIN_TOUCH;
   return (
     // Each button carries its own label; the container isn't one "adjustable" control so
     // VoiceOver/TalkBack can reach − and + separately
@@ -47,7 +47,7 @@ export function AddControl({ product, size = 'md' }: { product: Product; size?: 
   const { items, loaded } = useCart();
   const [busy, setBusy] = useState(false);
   const quantity = items.find((i) => i.productId === product.id)?.quantity ?? 0;
-  const h = size === 'lg' ? 52 : MIN_TOUCH;
+  const h = size === 'lg' ? 56 : MIN_TOUCH; // the website's h-11 / h-14
 
   if (!product.available) {
     return (
@@ -145,8 +145,8 @@ const styles = StyleSheet.create({
   disabled: { opacity: 0.35 },
   stepper: { flexDirection: 'row', alignItems: 'center', borderRadius: 999, backgroundColor: colors.cocoa },
   stepButton: { alignItems: 'center', justifyContent: 'center', borderRadius: 999 },
-  stepText: { color: colors.oat, fontSize: 20, fontWeight: '500' },
-  qty: { minWidth: 28, textAlign: 'center', color: colors.oat, fontSize: 16, fontWeight: '600' },
+  stepText: { color: colors.oat, fontSize: 18, fontFamily: fonts.sans },
+  qty: { minWidth: 28, textAlign: 'center', color: colors.oat, fontSize: 16, fontFamily: fonts.sansSemiBold, fontVariant: ['tabular-nums'] },
   add: {
     minWidth: 84,
     paddingHorizontal: 16,
@@ -156,16 +156,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  addText: { color: colors.cocoa, fontSize: 15, fontWeight: '500' },
-  addLg: { minWidth: 180, paddingHorizontal: 28, borderRadius: 999, backgroundColor: colors.cocoa, alignItems: 'center', justifyContent: 'center' },
-  addLgText: { color: colors.oat, fontSize: 16, fontWeight: '600' },
+  addText: { color: colors.cocoa, fontSize: 14, fontFamily: fonts.sansMedium },
+  addLg: { minWidth: 180, paddingHorizontal: 32, borderRadius: 999, backgroundColor: colors.cocoa, alignItems: 'center', justifyContent: 'center' },
+  addLgText: { color: colors.oat, fontSize: 16, fontFamily: fonts.sansMedium },
   soldOut: { paddingHorizontal: 16, borderRadius: 999, borderWidth: 1, borderColor: colors.hairline, justifyContent: 'center' },
-  soldOutText: { color: colors.cocoaSoft, fontSize: 14, fontWeight: '500' },
+  soldOutText: { color: colors.cocoaSoft, fontSize: 14, fontFamily: fonts.sansMedium },
   basketButton: { flexDirection: 'row', alignItems: 'center', gap: 8, minHeight: MIN_TOUCH, paddingLeft: 14, paddingRight: 6, borderRadius: 999, backgroundColor: colors.cocoa },
-  basketButtonText: { color: colors.oat, fontSize: 14, fontWeight: '600' },
+  basketButtonText: { color: colors.oat, fontSize: 14, fontFamily: fonts.sansMedium },
   badge: { minWidth: 24, height: 24, paddingHorizontal: 6, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(242,233,218,0.15)' },
   badgeOn: { backgroundColor: colors.plantain },
-  badgeText: { color: colors.oat, fontSize: 12, fontWeight: '700' },
+  badgeText: { color: colors.oat, fontSize: 12, fontFamily: fonts.sansSemiBold },
   badgeTextOn: { color: colors.cocoa },
   barWrap: { position: 'absolute', left: 12, right: 12, bottom: 0 },
   bar: {
@@ -184,8 +184,8 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   barLeft: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  barText: { color: colors.oat, fontSize: 15, fontWeight: '600' },
-  barTotal: { color: colors.oat, fontSize: 17, fontWeight: '600' },
+  barText: { color: colors.oat, fontSize: 15, fontFamily: fonts.sansSemiBold },
+  barTotal: { color: colors.oat, fontSize: 17, fontFamily: fonts.sansSemiBold },
   barView: { height: 40, paddingHorizontal: 16, borderRadius: 999, backgroundColor: colors.oat, justifyContent: 'center' },
-  barViewText: { color: colors.cocoa, fontSize: 14, fontWeight: '700' },
+  barViewText: { color: colors.cocoa, fontSize: 14, fontFamily: fonts.sansBold },
 });
