@@ -2,24 +2,25 @@ import { Image } from 'expo-image';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import type { Product } from '../lib/products';
-import { position, productImageKey, productPhotoPath, siteImage, standInPath, STAND_INS, type ImageWidth } from '../lib/site-content';
+import { useProductImage, type ProductImage } from '../lib/product-photos';
+import { position, productImageKey, siteImage, STAND_INS, type ImageWidth } from '../lib/site-content';
 import { colors, fonts, type } from '../lib/theme';
 
 // A product's image, in the website's order of preference (components/shop/ProductVisual.tsx):
-//   1. the real product photo, once the owner adds it to the website
+//   1. the real product photo, once the owner adds it to the website (lib/product-photos.ts)
 //   2. the licensed stand-in photo
 //   3. a typographic label, for a new product with neither yet
 // Same 4:5 crop and rounded corners as the website. Images load from the website.
-export function ProductVisual({ product, tint, width = 384, large = false }: { product: Product; tint: string; width?: ImageWidth; large?: boolean }) {
+// Pass `image` when the caller already looked it up (it needs to know which one is shown).
+export function ProductVisual({ product, tint, width = 384, large = false, image }: { product: Product; tint: string; width?: ImageWidth; large?: boolean; image?: ProductImage }) {
+  const own = useProductImage(product.name);
+  const shown = image ?? own;
   const standIn = STAND_INS[productImageKey(product.name)];
-  // Try the real photo first; when the website has none (404), fall back to the stand-in
-  const [stage, setStage] = useState<'photo' | 'stand-in' | 'label'>('photo');
   const [boxWidth, setBoxWidth] = useState(0);
   const soldOut = !product.available;
 
-  const src = stage === 'photo' ? productPhotoPath(product.name) : stage === 'stand-in' && standIn ? standInPath(product.name) : null;
   const alt =
-    stage === 'photo'
+    shown.kind === 'photo'
       ? product.name
       : standIn?.kind === 'snack'
         ? `Stand-in photo of ${standIn.shows} — not Igbadun Bites’ own product`
@@ -27,16 +28,16 @@ export function ProductVisual({ product, tint, width = 384, large = false }: { p
 
   return (
     <View style={[styles.frame, { backgroundColor: tint }, soldOut && styles.soldOut]} onLayout={(e) => setBoxWidth(e.nativeEvent.layout.width)}>
-      {src ? (
+      {shown.kind === 'pending' ? null : shown.kind !== 'label' ? (
         <Image
-          source={{ uri: siteImage(src, width) }}
+          source={{ uri: siteImage(shown.path, width) }}
           style={StyleSheet.absoluteFill}
           contentFit="cover"
-          contentPosition={stage === 'stand-in' ? position(standIn?.position) : 'center'}
+          contentPosition={shown.kind === 'stand-in' ? position(standIn?.position) : 'center'}
           transition={200}
           accessible
           accessibilityLabel={alt}
-          onError={() => setStage(stage === 'photo' && standIn ? 'stand-in' : 'label')}
+          onError={shown.onError}
         />
       ) : (
         // Typographic label (sized to the box like the website's container-query units)

@@ -108,10 +108,7 @@ export function productImageKey(name: string) {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 }
-// Real product photo first (when the owner adds public/images/products/<key>.jpg to the
-// website it appears here automatically), then the stand-in — the website's order.
-export const productPhotoPath = (name: string) => `/images/products/${productImageKey(name)}.jpg`;
-export const standInPath = (name: string) => `/images/stand-in/${productImageKey(name)}.jpg`;
+// Which product photos exist is read from the website itself: see lib/product-photos.ts
 
 // components/home/Story.tsx
 export const STORY = {

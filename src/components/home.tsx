@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import type { ReactNode } from 'react';
 import { Linking, Pressable, StyleSheet, Text, useWindowDimensions, View, type LayoutChangeEvent, type TextStyle } from 'react-native';
 import type { Product } from '../lib/products';
+import { useProductImage } from '../lib/product-photos';
 import { formatPence, pricePence } from '../lib/products';
 import { CHAPTERS, CONTACT, HERO, MANIFESTO, OCCASIONS, PRACTICAL, productImageKey, siteImage, SITE_URL, STAND_INS, STORY, countWords } from '../lib/site-content';
 import { colors, FALLBACK_TINT, fonts, space, tintFor, type } from '../lib/theme';
@@ -162,11 +163,13 @@ export function ChapterIndex({ items, active, onPick }: { items: ChapterItem[]; 
 // ---- Featured product (components/shop/FeaturedProduct.tsx) ----
 export function FeaturedProduct({ product, onMore }: { product: Product; onMore: () => void }) {
   const chapter = CHAPTERS[product.category];
-  const standIn = STAND_INS[productImageKey(product.name)];
+  const image = useProductImage(product.name);
+  // Large image, so say plainly when it's a stand-in rather than our own product photo
+  const standIn = image.kind === 'stand-in' ? STAND_INS[productImageKey(product.name)] : undefined;
   return (
     <View style={styles.featured}>
       <View>
-        <ProductVisual product={product} tint={tintFor(product.category)} width={828} large />
+        <ProductVisual product={product} tint={tintFor(product.category)} width={828} large image={image} />
         {standIn && (
           <Text style={[type.small, styles.soft, { marginTop: 12 }]}>
             <Text style={styles.pictured}>Pictured:</Text>{' '}
