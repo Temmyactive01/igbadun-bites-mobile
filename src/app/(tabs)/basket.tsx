@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { useNavigation } from 'expo-router';
 import { FlatList, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 import { QuantityStepper } from '../../components/cart-controls';
 import { cart, useCart, type CartItem } from '../../lib/cart';
@@ -11,6 +11,7 @@ import { colors, MIN_TOUCH, serif, tintFor } from '../../lib/theme';
 const WEB_CHECKOUT = 'https://igbadun-bites.netlify.app/checkout';
 
 export default function Basket() {
+  const navigation = useNavigation();
   const { session } = useSession();
   const { items, loaded, subtotal } = useCart();
   const { products } = useProducts();
@@ -37,7 +38,7 @@ export default function Basket() {
         <Text style={styles.emptyBody}>
           {session ? 'The chin chin won’t eat itself — pick a few favourites from the shop.' : 'Sign in when you add your first snack — your basket is shared with the website.'}
         </Text>
-        <Pressable onPress={() => router.navigate('/shop')} accessibilityRole="button" style={({ pressed }) => [styles.secondary, pressed && styles.pressed]}>
+        <Pressable onPress={() => navigation.navigate('index' as never)} accessibilityRole="button" style={({ pressed }) => [styles.secondary, pressed && styles.pressed]}>
           <Text style={styles.secondaryText}>Browse the snacks</Text>
         </Pressable>
       </View>

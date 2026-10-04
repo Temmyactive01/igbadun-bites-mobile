@@ -14,7 +14,8 @@ function TabIcon({ filled, outline, color, focused, size }: TabIconProps) {
   return <Ionicons name={focused ? filled : outline} size={size} color={color} />;
 }
 
-// Bottom tab bar: Home, Shop, Basket (with item count), Account.
+// Bottom tab bar: Shop, Orders, Basket (with item count), Account — the same structure
+// as the website's nav (Shop, Our story, My orders, Sign in/out).
 export default function TabsLayout() {
   // Same count as everywhere else in the app (lib/cart.ts) — updates live with the basket
   const { count } = useCart();
@@ -33,8 +34,8 @@ export default function TabsLayout() {
         sceneStyle: { backgroundColor: colors.oat },
       }}
     >
-      <Tabs.Screen name="index" options={{ title: 'Home', headerShown: false, tabBarIcon: (p) => <TabIcon filled="home" outline="home-outline" {...p} /> }} />
-      <Tabs.Screen name="shop" options={{ title: 'Shop', headerTitle: 'Igbadun Bites', tabBarIcon: (p) => <TabIcon filled="storefront" outline="storefront-outline" {...p} /> }} />
+      <Tabs.Screen name="index" options={{ title: 'Shop', headerTitle: 'Igbadun Bites', tabBarIcon: (p) => <TabIcon filled="storefront" outline="storefront-outline" {...p} /> }} />
+      <Tabs.Screen name="orders" options={{ title: 'Orders', headerTitle: 'My orders', tabBarIcon: (p) => <TabIcon filled="receipt" outline="receipt-outline" {...p} /> }} />
       <Tabs.Screen
         name="basket"
         options={{

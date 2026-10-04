@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { startCartSync } from '../lib/cart';
 import { colors, serif } from '../lib/theme';
 
-// App navigation: bottom tabs (Home, Shop, Basket, Account — see (tabs)/_layout.tsx),
+// App navigation: bottom tabs (Shop, Orders, Basket, Account — see (tabs)/_layout.tsx),
 // with Product detail opening on top of them.
 export default function RootLayout() {
   // The shared basket follows sign-in / sign-out for the whole app
