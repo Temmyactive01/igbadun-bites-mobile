@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
-import { redirectTo, signInWithGoogle, signOut } from '../lib/auth';
-import { useSession } from '../lib/session';
-import { colors, MIN_TOUCH, serif } from '../lib/theme';
+import { redirectTo, signInWithGoogle, signOut } from '../../lib/auth';
+import { useSession } from '../../lib/session';
+import { colors, MIN_TOUCH, serif } from '../../lib/theme';
 
 // Account: the Workflow 1 sign-in screen, moved here. Signing out also empties the
 // basket on this device (lib/cart.ts follows the session).

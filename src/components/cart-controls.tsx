@@ -1,7 +1,6 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { signInWithGoogle } from '../lib/auth';
 import { cart, MAX_QUANTITY, useCart } from '../lib/cart';
 import type { Product } from '../lib/products';
@@ -98,7 +97,7 @@ export function BasketButton() {
   const { count } = useCart();
   return (
     <Pressable
-      onPress={() => router.push('/basket')}
+      onPress={() => router.navigate('/basket')}
       accessibilityRole="button"
       accessibilityLabel={`Open basket, ${count} ${count === 1 ? 'item' : 'items'}`}
       hitSlop={8}
@@ -112,15 +111,14 @@ export function BasketButton() {
   );
 }
 
-// Bottom bar on the shop once the basket has items — within thumb reach (style.md)
+// Bar at the bottom of the Shop tab (above the tab bar) once the basket has items
 export function BasketBar() {
   const { count, subtotal } = useCart();
-  const insets = useSafeAreaInsets();
   if (count === 0) return null;
   return (
-    <View style={[styles.barWrap, { paddingBottom: Math.max(12, insets.bottom) }]}>
+    <View style={[styles.barWrap, { paddingBottom: 12 }]}>
       <Pressable
-        onPress={() => router.push('/basket')}
+        onPress={() => router.navigate('/basket')}
         accessibilityRole="button"
         accessibilityLabel={`Open basket: ${count} ${count === 1 ? 'item' : 'items'}, ${subtotal}`}
         style={({ pressed }) => [styles.bar, pressed && styles.pressed]}

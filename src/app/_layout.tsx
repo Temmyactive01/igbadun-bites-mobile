@@ -4,7 +4,8 @@ import { useEffect } from 'react';
 import { startCartSync } from '../lib/cart';
 import { colors, serif } from '../lib/theme';
 
-// App navigation: Shop (home) → Product detail; Basket and Account from the header.
+// App navigation: bottom tabs (Home, Shop, Basket, Account — see (tabs)/_layout.tsx),
+// with Product detail opening on top of them.
 export default function RootLayout() {
   // The shared basket follows sign-in / sign-out for the whole app
   useEffect(() => startCartSync(), []);
@@ -21,10 +22,8 @@ export default function RootLayout() {
           contentStyle: { backgroundColor: colors.oat },
         }}
       >
-        <Stack.Screen name="index" options={{ title: 'Igbadun Bites' }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false, title: 'Shop' }} />
         <Stack.Screen name="product/[id]" options={{ title: '' }} />
-        <Stack.Screen name="basket" options={{ title: 'Your basket' }} />
-        <Stack.Screen name="account" options={{ title: 'Account' }} />
       </Stack>
     </>
   );

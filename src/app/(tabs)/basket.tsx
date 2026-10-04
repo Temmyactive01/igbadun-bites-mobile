@@ -1,11 +1,10 @@
 import { router } from 'expo-router';
 import { FlatList, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { QuantityStepper } from '../components/cart-controls';
-import { cart, useCart, type CartItem } from '../lib/cart';
-import { formatPence, useProducts, type Product } from '../lib/products';
-import { useSession } from '../lib/session';
-import { colors, MIN_TOUCH, serif, tintFor } from '../lib/theme';
+import { QuantityStepper } from '../../components/cart-controls';
+import { cart, useCart, type CartItem } from '../../lib/cart';
+import { formatPence, useProducts, type Product } from '../../lib/products';
+import { useSession } from '../../lib/session';
+import { colors, MIN_TOUCH, serif, tintFor } from '../../lib/theme';
 
 // No mobile checkout yet (approved decision c): hand over to the website, where the same
 // account already has the same basket.
@@ -15,7 +14,6 @@ export default function Basket() {
   const { session } = useSession();
   const { items, loaded, subtotal } = useCart();
   const { products } = useProducts();
-  const insets = useSafeAreaInsets();
 
   // Basket lines carry name/price; the stepper needs the full product
   const productFor = (item: CartItem): Product =>
@@ -39,7 +37,7 @@ export default function Basket() {
         <Text style={styles.emptyBody}>
           {session ? 'The chin chin won’t eat itself — pick a few favourites from the shop.' : 'Sign in when you add your first snack — your basket is shared with the website.'}
         </Text>
-        <Pressable onPress={() => router.back()} accessibilityRole="button" style={({ pressed }) => [styles.secondary, pressed && styles.pressed]}>
+        <Pressable onPress={() => router.navigate('/shop')} accessibilityRole="button" style={({ pressed }) => [styles.secondary, pressed && styles.pressed]}>
           <Text style={styles.secondaryText}>Browse the snacks</Text>
         </Pressable>
       </View>
@@ -51,7 +49,7 @@ export default function Basket() {
       <FlatList
         data={items}
         keyExtractor={(i) => i.productId}
-        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 220 + insets.bottom }}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 220 }}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => {
           const product = productFor(item);
@@ -84,7 +82,7 @@ export default function Basket() {
         }}
       />
 
-      <View style={[styles.footer, { paddingBottom: Math.max(16, insets.bottom) }]}>
+      <View style={[styles.footer, { paddingBottom: 16 }]}>
         <View style={styles.subtotalRow}>
           <Text style={styles.subtotalLabel}>SUBTOTAL</Text>
           <Text style={styles.subtotal}>{subtotal}</Text>

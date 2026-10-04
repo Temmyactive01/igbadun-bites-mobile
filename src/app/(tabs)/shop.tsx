@@ -1,10 +1,10 @@
-import { router, Stack } from 'expo-router';
+import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, RefreshControl, SectionList, StyleSheet, Text, View } from 'react-native';
-import { AddControl, BasketBar, BasketButton } from '../components/cart-controls';
-import { useCart } from '../lib/cart';
-import { formatPence, groupByCategory, loadProducts, pricePence, useProducts, type Product } from '../lib/products';
-import { colors, MIN_TOUCH, serif, tintFor } from '../lib/theme';
+import { AddControl, BasketBar } from '../../components/cart-controls';
+import { useCart } from '../../lib/cart';
+import { formatPence, groupByCategory, loadProducts, pricePence, useProducts, type Product } from '../../lib/products';
+import { colors, MIN_TOUCH, serif, tintFor } from '../../lib/theme';
 
 // Shop: every product, grouped by category in the web's order. Browsing works signed
 // out; adding asks for sign-in (approved decision a). Tiles are type on a category
@@ -23,16 +23,6 @@ export default function Shop() {
 
   return (
     <View style={styles.screen}>
-      <Stack.Screen
-        options={{
-          headerLeft: () => (
-            <Pressable onPress={() => router.push('/account')} accessibilityRole="button" accessibilityLabel="Account" hitSlop={8} style={styles.headerLink}>
-              <Text style={styles.headerLinkText}>Account</Text>
-            </Pressable>
-          ),
-          headerRight: () => <BasketButton />,
-        }}
-      />
       {loading && products.length === 0 ? (
         <ActivityIndicator color={colors.cocoa} style={{ marginTop: 48 }} />
       ) : (
@@ -86,8 +76,6 @@ function ProductRow({ product }: { product: Product }) {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.oat },
-  headerLink: { minHeight: MIN_TOUCH, justifyContent: 'center', paddingRight: 8 },
-  headerLinkText: { color: colors.cocoa, fontSize: 15, fontWeight: '500' },
   intro: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 8 },
   eyebrow: { fontSize: 12, letterSpacing: 2.5, fontWeight: '600', color: colors.cocoaSoft },
   title: { marginTop: 10, fontSize: 40, lineHeight: 44, fontFamily: serif, color: colors.cocoa },

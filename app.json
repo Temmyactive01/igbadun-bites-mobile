@@ -25,7 +25,8 @@
       "expo-sqlite",
       "expo-web-browser",
       "expo-router",
-      "expo-status-bar"
+      "expo-status-bar",
+      "expo-font"
     ],
     "scheme": "igbadunbites",
     "experiments": {
