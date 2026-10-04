@@ -37,6 +37,7 @@ export const fonts = {
   heading: 'FrauncesText-Regular', // plain font-heading at small sizes (prices, tile names)
   headingItalic: 'FrauncesText-Italic',
   sans: 'InstrumentSans_400Regular',
+  sansItalic: 'InstrumentSans_400Regular_Italic',
   sansMedium: 'InstrumentSans_500Medium',
   sansSemiBold: 'InstrumentSans_600SemiBold',
   sansBold: 'InstrumentSans_700Bold',

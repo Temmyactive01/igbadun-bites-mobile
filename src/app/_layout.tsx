@@ -1,5 +1,6 @@
 // One import per weight, so only these four font files are bundled
 import { InstrumentSans_400Regular } from '@expo-google-fonts/instrument-sans/400Regular';
+import { InstrumentSans_400Regular_Italic } from '@expo-google-fonts/instrument-sans/400Regular_Italic';
 import { InstrumentSans_500Medium } from '@expo-google-fonts/instrument-sans/500Medium';
 import { InstrumentSans_600SemiBold } from '@expo-google-fonts/instrument-sans/600SemiBold';
 import { InstrumentSans_700Bold } from '@expo-google-fonts/instrument-sans/700Bold';
@@ -26,6 +27,7 @@ export default function RootLayout() {
     'FrauncesText-Regular': require('../../assets/fonts/Fraunces-Text-Regular.ttf'),
     'FrauncesText-Italic': require('../../assets/fonts/Fraunces-Text-Italic.ttf'),
     InstrumentSans_400Regular,
+    InstrumentSans_400Regular_Italic,
     InstrumentSans_500Medium,
     InstrumentSans_600SemiBold,
     InstrumentSans_700Bold,
@@ -45,7 +47,11 @@ export default function RootLayout() {
         }}
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false, title: 'Shop' }} />
-        <Stack.Screen name="product/[id]" options={{ title: '' }} />
+        {/* Product details open as a bottom sheet over the shop, like the website's panel */}
+        <Stack.Screen
+          name="product/[id]"
+          options={{ presentation: 'transparentModal', animation: 'none', headerShown: false, contentStyle: { backgroundColor: 'transparent' } }}
+        />
       </Stack>
     </>
   );
