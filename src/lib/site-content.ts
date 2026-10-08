@@ -78,29 +78,39 @@ export const CHAPTERS: Record<string, Chapter> = {
     image: { path: '/images/editorial/coconuts-market.jpg', alt: 'Coconuts piled on a wooden market stall', caption: 'Coconuts at Bakin Dogo Market, Kaduna' },
   },
 };
-export const FEATURED_PRODUCT_NAME = 'Milky Chin Chin';
+// Matched by key (see productImageKey), so it also finds the product under its old name
+export const FEATURED_PRODUCT_NAME = 'Chin Chin';
 
 // lib/stand-in-images.ts — licensed stand-in photos (credited on the website's /credits).
 // The files themselves are loaded from the website (public/images/stand-in/<key>.jpg).
+// Entries the owner's own photos replaced are removed, as on the website (Oct 2026: Cocoyam
+// Chips, Kokoro Egba, Chin Chin, Sisi Pelebe, Babadudu, Donkwa) — their files are gone too.
 export type StandIn = { kind: 'snack' | 'ingredient'; shows: string; position?: string };
 export const STAND_INS: Record<string, StandIn> = {
-  'cocoyam-chips': { kind: 'snack', shows: 'cocoyam (taro) chips' },
   'plantain-chips': { kind: 'snack', shows: 'plantain chips (ipekere) in a market basin', position: '50% 60%' },
   'akara-ogbomosho': { kind: 'snack', shows: 'crunchy akara' },
-  'kokoro-egba': { kind: 'snack', shows: 'kokoro', position: '50% 40%' },
-  'milky-chin-chin': { kind: 'snack', shows: 'freshly fried chin chin in a basket' },
   'flakes-chin-chin': { kind: 'snack', shows: 'chin chin crunch (flaked style)', position: '50% 55%' },
   gurundi: { kind: 'snack', shows: 'coconut biscuits' },
   peanuts: { kind: 'snack', shows: 'dry-fried groundnuts in a market sack' },
-  'sisi-pelebe': { kind: 'snack', shows: 'peanut brittle (groundnut toffee)' },
-  'baba-dudu': { kind: 'ingredient', shows: 'brown sugar' },
   'coconut-candy': { kind: 'snack', shows: 'coconut candy balls' },
-  dankwa: { kind: 'snack', shows: 'dankwa (dakuwa)' },
   'condensed-milk-sweet': { kind: 'snack', shows: 'a hawker’s tray of local milk sweets', position: '50% 20%' },
 };
 
-// Same rule as the website (lib/product-images.ts): "Milky Chin Chin" → "milky-chin-chin"
+// Products renamed to the owner's spelling (Oct 2026): old key → new key, as on the website
+// (lib/product-images.ts). Photos, links and "Start here" work under either name, and an old
+// shared link still opens the product.
+export const RENAMED_PRODUCT_KEYS: Record<string, string> = {
+  'baba-dudu': 'babadudu', // Baba Dudu → Babadudu
+  'milky-chin-chin': 'chin-chin', // Milky Chin Chin → Chin Chin
+  dankwa: 'donkwa', // Dankwa → Donkwa
+};
+export const currentProductKey = (key: string) => RENAMED_PRODUCT_KEYS[key] ?? key;
+
+// Same rule as the website (lib/product-images.ts): "Chin Chin" → "chin-chin"
 export function productImageKey(name: string) {
+  return currentProductKey(slug(name));
+}
+function slug(name: string) {
   return name
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '') // drop accents

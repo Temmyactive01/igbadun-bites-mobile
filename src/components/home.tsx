@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 import { Linking, Pressable, StyleSheet, Text, useWindowDimensions, View, type LayoutChangeEvent, type TextStyle } from 'react-native';
 import type { Product } from '../lib/products';
 import { useProductImage } from '../lib/product-photos';
-import { formatPence, pricePence } from '../lib/products';
+import { countForSale, formatPence, isComingSoon, pricePence } from '../lib/products';
 import { CHAPTERS, CONTACT, HERO, MANIFESTO, OCCASIONS, PRACTICAL, productImageKey, siteImage, SITE_URL, STAND_INS, STORY, countWords } from '../lib/site-content';
 import { colors, FALLBACK_TINT, fonts, space, tintFor, type } from '../lib/theme';
 import { AddControl } from './cart-controls';
@@ -124,7 +124,7 @@ export function ShopIntro({ productCount, chapterCount, error }: { productCount:
             {countWords(productCount)} snacks in {chapterCount} chapters — from the crunch of the party tray to the sweets you saved for later.
           </Text>
           <Text style={[type.small, styles.soft, { marginTop: 16 }]}>
-            Photos are stand-ins showing typical versions of each snack, not our own products — our product photography is coming soon.{' '}
+            Some photos are stand-ins showing typical versions of a snack, not our own products — the rest are ours, with more coming soon.{' '}
             <InlineLink onPress={() => openSite('/credits')}>Photo credits</InlineLink>
           </Text>
         </View>
@@ -185,7 +185,7 @@ export function FeaturedProduct({ product, onMore }: { product: Product; onMore:
         <Text style={[type.bodyL, styles.soft, { marginTop: 24 }]}>{product.description}</Text>
         <View style={[styles.row, { alignItems: 'baseline', gap: 16, marginTop: 32 }]}>
           <Text style={styles.featuredPrice}>{formatPence(pricePence(product))}</Text>
-          <Text style={[type.small, styles.soft]}>{product.pack_size}</Text>
+          {!!product.pack_size.trim() && <Text style={[type.small, styles.soft]}>{product.pack_size}</Text>}
         </View>
         <View style={styles.featuredActions}>
           <AddControl product={product} size="lg" />
@@ -205,6 +205,7 @@ export function FeaturedProduct({ product, onMore }: { product: Product; onMore:
 export function Chapter({ number, category, products, onLayout }: { number: number; category: string; products: Product[]; onLayout: (e: LayoutChangeEvent) => void }) {
   const content = CHAPTERS[category];
   const num = String(number).padStart(2, '0');
+  const forSale = countForSale(products); // coming-soon products aren't counted
   // Two columns, 16 apart, inside the 16 page gutters — the website's grid-cols-2 gap-x-4
   const cellWidth = (useWindowDimensions().width - space.gutter * 2 - 16) / 2;
   return (
@@ -215,7 +216,7 @@ export function Chapter({ number, category, products, onLayout }: { number: numb
         </Text>
         <View style={{ flex: 1, paddingTop: 4 }}>
           <Eyebrow>
-            Chapter {num} · {products.length} {products.length === 1 ? 'snack' : 'snacks'}
+            Chapter {num} · {forSale} {forSale === 1 ? 'snack' : 'snacks'}
           </Eyebrow>
           <Text style={[type.displayL, styles.ink, { marginTop: 16 }]} accessibilityRole="header">
             {content?.title ?? category}
@@ -258,6 +259,7 @@ const rowsOfTwo = <T,>(items: T[]) => items.reduce<T[][]>((rows, item, i) => (i 
 
 // ---- Product tile (components/shop/ProductTile.tsx) ----
 function ProductTile({ product, tint }: { product: Product; tint: string }) {
+  const comingSoon = isComingSoon(product);
   return (
     <View style={{ flex: 1 }}>
       <Pressable onPress={() => openProduct(product)} accessibilityRole="button" accessibilityLabel={`${product.name}: details and allergens`}>
@@ -267,12 +269,14 @@ function ProductTile({ product, tint }: { product: Product; tint: string }) {
         <Text style={styles.tileName} onPress={() => openProduct(product)}>
           {product.name}
         </Text>
-        <Text style={styles.tilePrice}>{formatPence(pricePence(product))}</Text>
+        {/* Coming soon: no price yet */}
+        {!comingSoon && <Text style={styles.tilePrice}>{formatPence(pricePence(product))}</Text>}
         <Text onPress={() => openProduct(product)} accessibilityRole="link" style={[type.xs, styles.tileDetails]}>
-          Details & allergens
+          {comingSoon ? 'Details' : 'Details & allergens'}
         </Text>
         <View style={styles.tileFoot}>
-          <Text style={[type.xs, styles.soft]}>{product.pack_size}</Text>
+          {/* No pack size yet (empty, or coming soon): nothing, keeping the button on the right */}
+          <Text style={[type.xs, styles.soft]}>{comingSoon ? '' : product.pack_size.trim()}</Text>
           <AddControl product={product} />
         </View>
       </View>

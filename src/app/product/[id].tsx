@@ -5,7 +5,7 @@ import { AccessibilityInfo, Animated, Easing, Linking, Pressable, ScrollView, St
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AddControl } from '../../components/cart-controls';
 import { ProductVisual } from '../../components/product-visual';
-import { detailText, formatPence, isConfirmed, pricePence, useProducts, type Product } from '../../lib/products';
+import { detailText, formatPence, isComingSoon, isConfirmed, pricePence, useProducts, type Product } from '../../lib/products';
 import { CONTACT, productImageKey, SITE_URL } from '../../lib/site-content';
 import { colors, fonts, tintFor, type } from '../../lib/theme';
 
@@ -79,7 +79,12 @@ function Sheet({ product, bottomInset, onClose }: { product: Product; bottomInse
   const ingredients = detailText(product.ingredients);
   const allergens = detailText(product.allergens);
   const storage = detailText(product.storage_guidance);
-  const researched = !isConfirmed(product) && !!(ingredients || allergens || storage);
+  const comingSoon = isComingSoon(product);
+  const hasDetails = !!(ingredients || allergens || storage);
+  const researched = !comingSoon && !isConfirmed(product) && hasDetails;
+  // No ingredients, allergens or storage yet (a new or coming-soon product): one notice instead of the rows
+  const detailsPending = comingSoon || !hasDetails;
+  const packSize = product.pack_size.trim();
 
   // The same link the website copies: it opens this product's panel on the website
   async function copyLink() {
@@ -112,10 +117,13 @@ function Sheet({ product, bottomInset, onClose }: { product: Product; bottomInse
             <Text style={styles.name} accessibilityRole="header">
               {product.name}
             </Text>
-            <View style={styles.priceRow}>
-              <Text style={styles.price}>{formatPence(pricePence(product))}</Text>
-              <Text style={[type.small, styles.soft]}>{product.pack_size}</Text>
-            </View>
+            {/* Coming soon: no price yet (the photo label and the button already say so) */}
+            {!comingSoon && (
+              <View style={styles.priceRow}>
+                <Text style={styles.price}>{formatPence(pricePence(product))}</Text>
+                {!!packSize && <Text style={[type.small, styles.soft]}>{packSize}</Text>}
+              </View>
+            )}
           </View>
         </View>
 
@@ -131,12 +139,21 @@ function Sheet({ product, bottomInset, onClose }: { product: Product; bottomInse
           </View>
         )}
 
-        <View style={[styles.details, { marginTop: researched ? 24 : 32 }]}>
-          <Detail label="Ingredients" value={ingredients} />
-          <Detail label="Allergens" value={allergens} accent />
-          <Detail label="Storage" value={storage} />
-          <Detail label="Pack size" value={product.pack_size} last />
-        </View>
+        {detailsPending ? (
+          <View style={[styles.notice, { marginTop: 32 }]}>
+            <Text style={[type.small, styles.ink]}>
+              <Text style={styles.strong}>Ingredients and allergens coming soon.</Text> We’re still confirming this snack’s ingredients,
+              allergens and storage with our supplier, so please don’t order it if you have an allergy until you’ve checked with us.
+            </Text>
+          </View>
+        ) : (
+          <View style={[styles.details, { marginTop: researched ? 24 : 32 }]}>
+            <Detail label="Ingredients" value={ingredients} />
+            <Detail label="Allergens" value={allergens} accent />
+            <Detail label="Storage" value={storage} last={!packSize} />
+            {!!packSize && <Detail label="Pack size" value={packSize} last />}
+          </View>
+        )}
 
         <View style={styles.allergy}>
           <Text style={[type.small, styles.ink]}>

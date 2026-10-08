@@ -6,8 +6,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BasketBar } from '../../components/cart-controls';
 import { Chapter, ChapterIndex, FeaturedProduct, Footer, Hero, Manifesto, Occasions, Practical, ShopIntro, ShopNote, Story } from '../../components/home';
 import { useCart } from '../../lib/cart';
-import { groupByCategory, loadProducts, useProducts } from '../../lib/products';
-import { FEATURED_PRODUCT_NAME } from '../../lib/site-content';
+import { countForSale, groupByCategory, isComingSoon, loadProducts, useProducts } from '../../lib/products';
+import { FEATURED_PRODUCT_NAME, productImageKey } from '../../lib/site-content';
 import { colors, fonts } from '../../lib/theme';
 
 const HEADER = 64; // the website's header bar height (h-16)
@@ -22,7 +22,10 @@ export default function Shop() {
   const { products, loading, error } = useProducts();
   const { count } = useCart();
   const groups = useMemo(() => groupByCategory(products), [products]);
-  const featured = products.find((p) => p.name === FEATURED_PRODUCT_NAME && p.available) ?? products.find((p) => p.available);
+  // Matched by key, so it finds Chin Chin under its old name too; never a coming-soon product
+  const featured =
+    products.find((p) => productImageKey(p.name) === productImageKey(FEATURED_PRODUCT_NAME) && p.available && !isComingSoon(p)) ??
+    products.find((p) => p.available && !isComingSoon(p));
 
   const scroll = useRef<ScrollView>(null);
   const [viewport, setViewport] = useState(0);
@@ -64,7 +67,7 @@ export default function Shop() {
   // The chapter crossing the upper-middle of the screen is "current" (website: rootMargin -35%)
   const probe = scrollY + viewport * 0.35;
   const active = [...groups].reverse().find((g) => (chapterTop(g.category) ?? Infinity) <= probe)?.category ?? null;
-  const indexItems = groups.map((g) => ({ category: g.category, count: g.data.length }));
+  const indexItems = groups.map((g) => ({ category: g.category, count: countForSale(g.data) }));
 
   function onScroll(e: NativeSyntheticEvent<NativeScrollEvent>) {
     setScrollY(e.nativeEvent.contentOffset.y);
@@ -94,7 +97,7 @@ export default function Shop() {
         </View>
 
         <View onLayout={measure('intro')}>
-          <ShopIntro productCount={products.length} chapterCount={groups.length} error={error} />
+          <ShopIntro productCount={countForSale(products)} chapterCount={groups.length} error={error} />
           {loading && products.length === 0 && <ActivityIndicator color={colors.cocoa} style={{ marginBottom: 48 }} />}
         </View>
 

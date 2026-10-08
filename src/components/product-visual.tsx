@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import type { Product } from '../lib/products';
+import { isComingSoon, type Product } from '../lib/products';
 import { useProductImage, type ProductImage } from '../lib/product-photos';
 import { position, productImageKey, siteImage, STAND_INS, type ImageWidth } from '../lib/site-content';
 import { colors, fonts, type } from '../lib/theme';
@@ -17,7 +17,9 @@ export function ProductVisual({ product, tint, width = 384, large = false, image
   const shown = image ?? own;
   const standIn = STAND_INS[productImageKey(product.name)];
   const [boxWidth, setBoxWidth] = useState(0);
-  const soldOut = !product.available;
+  // Coming soon: full colour (it isn't sold out), labelled instead
+  const comingSoon = isComingSoon(product);
+  const soldOut = !product.available && !comingSoon;
 
   const alt =
     shown.kind === 'photo'
@@ -50,9 +52,9 @@ export function ProductVisual({ product, tint, width = 384, large = false, image
           </Text>
         </View>
       )}
-      {soldOut && (
+      {(soldOut || comingSoon) && (
         <View style={styles.soldOutPill}>
-          <Text style={[type.eyebrow, { color: colors.cocoa }]}>Sold out</Text>
+          <Text style={[type.eyebrow, { color: colors.cocoa }]}>{comingSoon ? 'Coming soon' : 'Sold out'}</Text>
         </View>
       )}
     </View>
