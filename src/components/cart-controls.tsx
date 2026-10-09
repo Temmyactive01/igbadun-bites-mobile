@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { signInWithGoogle } from '../lib/auth';
 import { cart, MAX_QUANTITY, useCart } from '../lib/cart';
-import type { Product } from '../lib/products';
+import { isComingSoon, type Product } from '../lib/products';
 import { useSession } from '../lib/session';
 import { colors, fonts, MIN_TOUCH } from '../lib/theme';
 
@@ -49,10 +49,11 @@ export function AddControl({ product, size = 'md' }: { product: Product; size?: 
   const quantity = items.find((i) => i.productId === product.id)?.quantity ?? 0;
   const h = size === 'lg' ? 56 : MIN_TOUCH; // the website's h-11 / h-14
 
-  if (!product.available) {
+  // Coming soon (announced, not yet for sale) or sold out: a label, never an Add button
+  if (isComingSoon(product) || !product.available) {
     return (
       <View style={[styles.soldOut, { height: h }]}>
-        <Text style={styles.soldOutText}>Sold out</Text>
+        <Text style={styles.soldOutText}>{isComingSoon(product) ? 'Coming soon' : 'Sold out'}</Text>
       </View>
     );
   }

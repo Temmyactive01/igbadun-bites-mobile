@@ -63,7 +63,8 @@ export default function Basket() {
                   <Text style={styles.lineTotal}>{formatPence(item.pricePence * item.quantity)}</Text>
                 </View>
                 <Text style={styles.lineMeta}>
-                  {item.packSize} · {formatPence(item.pricePence)} each
+                  {item.packSize.trim() ? `${item.packSize} · ` : ''}
+                  {formatPence(item.pricePence)} each
                 </Text>
                 <View style={styles.lineActions}>
                   <QuantityStepper product={product} quantity={item.quantity} />

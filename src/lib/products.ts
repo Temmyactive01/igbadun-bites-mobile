@@ -15,7 +15,16 @@ export type Product = {
   storage_guidance: string;
   details_status?: 'researched' | 'confirmed';
   available: boolean;
+  // Website migration 006: false = hidden from customers (the database never sends it)
+  visible?: boolean;
+  // Website migration 008: announced before its price and details — "Coming soon", never buyable
+  coming_soon?: boolean;
 };
+
+// Same rules as the website (lib/product-status.ts)
+export const isComingSoon = (p: Product) => p.coming_soon === true;
+// How many are on sale — coming-soon products aren't counted
+export const countForSale = (products: Product[]) => products.filter((p) => !isComingSoon(p)).length;
 
 // Same display order as the web shop (igbadun-bites/lib/products.ts)
 export const CATEGORY_ORDER = ['Chips', 'Crunchy snacks', 'Traditional treats and sweets'];
